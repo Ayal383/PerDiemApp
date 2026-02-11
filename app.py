@@ -1,12 +1,20 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from PIL import Image
+import requests
+from io import BytesIO
 
 # =====================================
 # CONFIGURACIÓN DE PÁGINA
 # =====================================
 
 st.set_page_config(page_title="Expences Validator", layout="wide")
+
+img = Image.open("Logo COR3.png")
+img_resized = img.resize((200, 100))  # width=300px, height=200px
+
+st.image(img_resized)
 
 st.title("Expences Validator")
 st.markdown("---")
@@ -171,4 +179,5 @@ elif opcion == "Per Diem":
             
 
             st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+
 
