@@ -16,7 +16,7 @@ img_resized = img.resize((200, 100))  # width=300px, height=200px
 
 st.image(img_resized)
 
-st.title("Expences Validator")
+st.title("Expenses Validator")
 st.markdown("---")
 
 # =====================================
@@ -189,6 +189,7 @@ elif opcion == "Per Diem":
             
 
             st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+
 
 
 
