@@ -105,9 +105,16 @@ elif opcion == "Per Diem":
 
     dias = st.number_input("Cantidad de días", min_value=1, step=1)
 
+    numtraveldays = 0
     aplicar_travel = st.checkbox(
-        "Aplicar 75% en primer y último día (Travel Days)", value=True
-    )
+        "Aplicar 75% en primer y último día (Travel Days)", value=True)
+    
+    if aplicar_travel == True:
+    
+        numtraveldays=st.number_input("Cantidad de dias de travel")
+
+    # hacer una nueva condicion para poder ingrasar inputs de cuantos travel day son 
+    
 
     if st.button("Calcular Per Diem"):
 
@@ -154,10 +161,13 @@ elif opcion == "Per Diem":
             else:
                 total_meals = meals_diario * dias
 
-            total_lodging = lodging * dias
-            total_perdiem = total_lodging + total_meals
+            
+            
             TravelDay = meals_diario * .75
-            TotalTravelDay = 2 * TravelDay
+            TotalTravelDay = (numtraveldays * TravelDay)
+            Total_Meals_Incidental = ((dias - numtraveldays) * meals_diario)
+            total_lodging = lodging * dias
+            total_perdiem = total_lodging + Total_Meals_Incidental + TotalTravelDay
 
 
             st.success("Cálculo completado ✅")
@@ -172,12 +182,13 @@ elif opcion == "Per Diem":
             col5, col6, col7, col8 = st.columns(4)
             
             col5.metric("Total Lodging", f"${total_lodging:,.2f}")
-            col6.metric("Total Meals + Incidental", f"${meals_diario:,.2f}")
+            col6.metric("Total Meals + Incidental", f"${Total_Meals_Incidental:,.2f}")
             col7.metric("Total Travel Day", f"${TotalTravelDay:,.2f}")
             col8.metric("", f"{no_se:}")
             
             
 
             st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+
 
 
