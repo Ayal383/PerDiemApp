@@ -129,7 +129,7 @@ if opcion == "Millaje":
     
     else:
         año = st.selectbox("Año del viaje", [2023,2024,2025,2026])
-        
+
         millas = st.number_input("Millas recorridas", min_value=0.0)
 
         if st.button("Calcular Millaje"):
@@ -242,10 +242,11 @@ elif opcion == "Per Diem":
             col5.metric("Total Lodging", f"${total_lodging:,.2f}")
             col6.metric("Total Meals + Incidental", f"${Total_Meals_Incidental:,.2f}")
             col7.metric("Total Travel Day", f"${TotalTravelDay:,.2f}")
-            col8.metric("", f"{no_se:}")
+            col8.metric("Total Meal Allowance",f"${(Total_Meals_Incidental + TotalTravelDay):,.2f}")
             
             
-            st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+            st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")['Seasons (Beg-End)']}")
+
 
 
 
