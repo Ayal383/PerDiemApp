@@ -4,6 +4,31 @@ from datetime import datetime
 from PIL import Image
 import requests
 from io import BytesIO
+import ast
+import operator as op
+
+# Operadores permitidos
+allowed_operators = {
+    ast.Add: op.add,
+    ast.Sub: op.sub,
+    ast.Mult: op.mul,
+    ast.Div: op.truediv
+}
+
+def eval_expr(expr):
+    node = ast.parse(expr, mode='eval').body
+    return eval_node(node)
+
+def eval_node(node):
+    if isinstance(node, ast.Num):
+        return node.n
+    elif isinstance(node, ast.BinOp):
+        return allowed_operators[type(node.op)](
+            eval_node(node.left),
+            eval_node(node.right)
+        )
+    else:
+        raise TypeError("Operación no permitida")
 
 # =====================================
 # CONFIGURACIÓN DE PÁGINA
@@ -43,7 +68,6 @@ def cargar_datos():
 
     return mileage_df, perdiem_df
 
-
 mileage_df, perdiem_df = cargar_datos()
 
 # =====================================
@@ -67,27 +91,63 @@ if opcion == "Millaje":
 
     transporte = st.selectbox(
         "Medio de transporte",
-        ["Car", "Motorcycle", "Airplane", "MALT", "Other"]
+        ["Car", "Uber(taxi)", "Motorcycle", "Airplane", "MALT", "Other"]
     )
 
-    millas = st.number_input("Millas recorridas", min_value=0)
+    if transporte == "Uber(taxi)":
 
-    if st.button("Calcular Millaje"):
+       bill_input = st.text_input("total del fare", value="0")
 
-        tarifas_validas = mileage_df[
-            mileage_df["Effective Date"].dt.year <= año
-        ].sort_values("Effective Date", ascending=False)
+       try:
+        bill = float(eval_expr(bill_input))
+       except:
+        st.error("Expresión inválida")
+        bill = 0
 
-        if tarifas_validas.empty:
-            st.error("No hay tarifas disponibles para ese año.")
-        else:
-            tarifa = tarifas_validas.iloc[0][transporte]
-            total = millas * tarifa
+       Tip = st.checkbox(
+        "Aplicar 15%", value=True)
+       
+       if st.button("Calcular Millaje"):
+
+        if Tip == True:
+
+            total = bill
+            tips = bill * .15
 
             st.success("Cálculo completado ✅")
+            st.metric("Total", f"${total:,.2f}")
+            st.metric("Total tip", f"${tips:,.2f}")
+            st.metric("Total a pagar", f"${total + tips:,.2f}")
 
-            st.metric("Tarifa aplicada", f"${tarifa}")
+
+        else:
+           
+            total = bill
+
+            st.success("Cálculo completado ✅")
+            st.metric("Total", f"${total:,.2f}")
             st.metric("Total a pagar", f"${total:,.2f}")
+
+    
+    else:
+        millas = st.number_input("Millas recorridas", min_value=0.0)
+
+        if st.button("Calcular Millaje"):
+
+            tarifas_validas = mileage_df[
+                mileage_df["Effective Date"].dt.year <= año
+            ].sort_values("Effective Date", ascending=False)
+
+            if tarifas_validas.empty:
+                st.error("No hay tarifas disponibles para ese año.")
+            else:
+                tarifa = tarifas_validas.iloc[0][transporte]
+                total = millas * tarifa
+
+                st.success("Cálculo completado ✅")
+                st.metric("Tarifa aplicada", f"${tarifa}")
+                st.metric("Total a pagar", f"${total:,.2f}")
+
 
 # =====================================
 # PER DIEM
@@ -162,13 +222,11 @@ elif opcion == "Per Diem":
                 total_meals = meals_diario * dias
 
             
-            
             TravelDay = meals_diario * .75
             TotalTravelDay = (numtraveldays * TravelDay)
             Total_Meals_Incidental = ((dias - numtraveldays) * meals_diario)
             total_lodging = lodging * dias
             total_perdiem = total_lodging + Total_Meals_Incidental + TotalTravelDay
-
 
             st.success("Cálculo completado ✅")
             no_se = ""
@@ -187,8 +245,8 @@ elif opcion == "Per Diem":
             col8.metric("", f"{no_se:}")
             
             
-
             st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+
 
 
 
