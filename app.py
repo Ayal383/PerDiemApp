@@ -245,7 +245,8 @@ elif opcion == "Per Diem":
             col8.metric("Total Meal Allowance",f"${(Total_Meals_Incidental + TotalTravelDay):,.2f}")
             
             
-            st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")['Seasons (Beg-End)']}")
+            st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+
 
 
 
