@@ -87,8 +87,6 @@ if opcion == "Millaje":
 
     st.header("Cálculo de Millaje")
 
-    año = st.selectbox("Año del viaje", [2023,2024,2025,2026])
-
     transporte = st.selectbox(
         "Medio de transporte",
         ["Car", "Uber(taxi)", "Motorcycle", "Airplane", "MALT", "Other"]
@@ -130,6 +128,8 @@ if opcion == "Millaje":
 
     
     else:
+        año = st.selectbox("Año del viaje", [2023,2024,2025,2026])
+        
         millas = st.number_input("Millas recorridas", min_value=0.0)
 
         if st.button("Calcular Millaje"):
@@ -246,6 +246,7 @@ elif opcion == "Per Diem":
             
             
             st.info(f"Temporada aplicada: {fila_valida['Seasons (Beg-End)']}")
+
 
 
 
